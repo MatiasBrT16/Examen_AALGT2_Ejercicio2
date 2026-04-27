@@ -18,3 +18,129 @@ def menu():
     return opcion
 
 lista_puestos = []
+
+while True:
+    opc = menu()
+
+    if opc == "1":
+        print("\n--- Registro de Puesto ---")
+        codigo = int(input("Código: "))
+        descripcion = input("Descripción: ")
+        area = input("Área: ")
+        plazas = int(input("Plazas requeridas: "))
+        sueldo = float(input("Sueldo: "))
+
+        # Validaciones básicas
+        error = False
+        if len(descripcion) < 3 or len(area) < 3:
+            print("Error: Los textos deben tener al menos 3 letras.")
+            error = True
+        if codigo <= 0 or plazas <= 0 or sueldo <= 0:
+            print("Error: Los números deben ser mayores a cero.")
+            error = True
+
+        # Búsqueda lineal para duplicados
+        for p in lista_puestos:
+            if p.codigo == codigo or p.descripcion == descripcion or p.areaSolicitante == area:
+                print("Error: El código, descripción o área ya existen.")
+                error = True
+                break
+        
+        if not error:
+            nuevo = PuestoDeTrabajo(codigo, descripcion, area, plazas, sueldo)
+            lista_puestos.append(nuevo)
+            print("Puesto agregado con éxito.")
+
+    elif opc == "2":
+        print("\n--- Lista de Puestos ---")
+        for p in lista_puestos:
+            print(f"Cod: {p.codigo} | Desc: {p.descripcion} | Área: {p.areaSolicitante} | Plazas: {p.plazasRequeridas} | Sueldo: {p.sueldo}")
+
+    elif opc == "3":
+        cod_borrar = int(input("Ingrese código a borrar: "))
+        # Ordenamiento Burbuja (Mayor a Menor por código)
+        n = len(lista_puestos)
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                if lista_puestos[j].codigo < lista_puestos[j+1].codigo:
+                    lista_puestos[j], lista_puestos[j+1] = lista_puestos[j+1], lista_puestos[j]
+        
+        # Búsqueda lineal y eliminación
+        encontrado = False
+        for i in range(len(lista_puestos) - 1, -1, -1):
+            if lista_puestos[i].codigo == cod_borrar:
+                lista_puestos.pop(i)
+                encontrado = True
+        if encontrado:
+            print("Puesto(s) eliminado(s).")
+        else:
+            print("No se encontró el código.")
+
+    elif opc == "4":
+        # Ordenamiento por Inserción (Sueldo Mayor a Menor)
+        for i in range(1, len(lista_puestos)):
+            clave = lista_puestos[i]
+            j = i - 1
+            while j >= 0 and lista_puestos[j].sueldo < clave.sueldo:
+                lista_puestos[j + 1] = lista_puestos[j]
+                j -= 1
+            lista_puestos[j + 1] = clave
+        
+        sueldo_buscar = float(input("Sueldo a buscar: "))
+        # Búsqueda Binaria
+        bajo = 0
+        alto = len(lista_puestos) - 1
+        posicion = -1
+        while bajo <= alto:
+            medio = (bajo + alto) // 2
+            if lista_puestos[medio].sueldo == sueldo_buscar:
+                posicion = medio
+                break
+            elif lista_puestos[medio].sueldo < sueldo_buscar:
+                alto = medio - 1
+            else:
+                bajo = medio + 1
+        
+        if posicion != -1:
+            # Expandir hacia los lados por si hay sueldos repetidos
+            inicio = posicion
+            while inicio > 0 and lista_puestos[inicio-1].sueldo == sueldo_buscar:
+                inicio -= 1
+            fin = posicion
+            while fin < len(lista_puestos)-1 and lista_puestos[fin+1].sueldo == sueldo_buscar:
+                fin += 1
+            
+            for k in range(inicio, fin + 1):
+                p = lista_puestos[k]
+                print(f"Encontrado: {p.descripcion} - Sueldo: {p.sueldo}")
+        else:
+            print("Sueldo no encontrado.")
+
+    elif opc == "5":
+        presupuesto = float(input("Monto total a invertir: "))
+        # Método de Selección (Total requerido: plazas * sueldo, de Mayor a Menor)
+        n = len(lista_puestos)
+        for i in range(n):
+            max_idx = i
+            for j in range(i + 1, n):
+                total_j = lista_puestos[j].plazasRequeridas * lista_puestos[j].sueldo
+                total_max = lista_puestos[max_idx].plazasRequeridas * lista_puestos[max_idx].sueldo
+                if total_j > total_max:
+                    max_idx = j
+            lista_puestos[i], lista_puestos[max_idx] = lista_puestos[max_idx], lista_puestos[i]
+        
+        print("\n--- Puestos que se pueden contratar ---")
+        acumulado = 0
+        for p in lista_puestos:
+            costo_puesto = p.plazasRequeridas * p.sueldo
+            if acumulado + costo_puesto <= presupuesto:
+                acumulado += costo_puesto
+                print(f"{p.descripcion} (Costo total: {costo_puesto})")
+            else:
+                break
+
+    elif opc == "6":
+        print("Saliendo del programa...")
+        break
+    else:
+        print("Opción no válida.")
