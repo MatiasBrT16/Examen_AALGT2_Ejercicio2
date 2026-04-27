@@ -1,0 +1,20 @@
+class PuestoDeTrabajo:
+    def __init__(self, codigo, descripcion, areaSolicitante, plazasRequeridas, sueldo):
+        self.codigo = codigo
+        self.descripcion = descripcion
+        self.areaSolicitante = areaSolicitante
+        self.plazasRequeridas = plazasRequeridas
+        self.sueldo = sueldo
+
+def menu():
+    print("\n--- MENÚ DE GESTIÓN DE PUESTOS ---")
+    print("1 - AgregaPuesto()")
+    print("2 - MostrarTodo()")
+    print("3 -  BorraPuesto()")
+    print("4 - BuscaSueldo()")
+    print("5 - PuestosAContratar()")
+    print("6 - Salir")
+    opcion = input("Seleccione una opción: ")
+    return opcion
+
+lista_puestos = []
