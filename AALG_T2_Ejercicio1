@@ -1,1 +1,57 @@
+import random
 
+def buscar_max_min_multiplos3_rec(arreglo, indice):
+    # Caso Base: Si llegamos al final del arreglo, regresamos None para max y min
+    if indice == len(arreglo):
+        return None, None
+    
+    # Llamada recursiva para obtener el max y min del resto del arreglo
+    max_resto, min_resto = buscar_max_min_multiplos3_rec(arreglo, indice + 1)
+    
+    elem_actual = arreglo[indice]
+    
+    # Comprobamos si el elemento actual es múltiplo de 3
+    if elem_actual % 3 == 0:
+        # Si el resto del arreglo no devolvió múltiplos de 3, el actual es el max y min
+        if max_resto is None:
+            return elem_actual, elem_actual
+        else:
+            # Comparamos el actual con los resultados del resto del arreglo
+            nuevo_max = elem_actual if elem_actual > max_resto else max_resto
+            nuevo_min = elem_actual if elem_actual < min_resto else min_resto
+            return nuevo_max, nuevo_min
+    else:
+        # Si el actual no es múltiplo de 3, simplemente heredamos lo del resto
+        return max_resto, min_resto
+
+def calcular_promedio_max_min(arreglo):
+    # Iniciamos la recursión desde el índice 0
+    maximo, minimo = buscar_max_min_multiplos3_rec(arreglo, 0)
+    
+    if maximo is None or minimo is None:
+        return "No se encontraron números múltiplos de 3 en el arreglo."
+    
+    # Calculamos el promedio entre el máximo y mínimo hallados
+    promedio = (maximo + minimo) / 2
+    return promedio
+
+# --- Bloque Principal / Proyecto ---
+if __name__ == "__main__":
+    # 1. El usuario indica el tamaño del arreglo
+    tamano = int(input("Ingrese el tamaño del arreglo: "))
+    
+    # 2. Se llena con números aleatorios de entre 2 a 4 cifras (de 10 a 9999)
+    arreglo_usuario = [random.randint(10, 9999) for _ in range(tamano)]
+    print("\nArreglo generado aleatoriamente:")
+    print(arreglo_usuario)
+    
+    # Ejemplo controlado del enunciado para verificar funcionamiento:
+    ejemplo_enunciado = [5, 6, 10, 9, 12, 14]
+    print("\n--- Validación con el ejemplo del enunciado ---")
+    print(f"Arreglo de prueba: {ejemplo_enunciado}")
+    print(f"Resultado esperado: 9.0 -> Resultado obtenido: {calcular_promedio_max_min(ejemplo_enunciado)}")
+    
+    # 3. Cálculo con el arreglo del usuario
+    print("\n--- Resultado del Arreglo Usuario ---")
+    resultado = calcular_promedio_max_min(arreglo_usuario)
+    print(f"El promedio entre el máximo y mínimo múltiplo de 3 es: {resultado}")
