@@ -1,0 +1,27 @@
+def suma_rango_recursivo(lista, pi, pf):
+
+    if pi > pf:
+        return 0
+    
+
+    return lista[pi] + suma_rango_recursivo(lista, pi + 1, pf)
+
+
+if __name__ == "__main__":
+
+    print("--- SUMA DE RANGO EN LISTA (RECURSIVO) ---")
+    
+
+    valores = [10, 20, 30, 40, 50, 60, 70]
+    print(f"Lista disponible: {valores}")
+    print(f"Los índices válidos van desde 0 hasta {len(valores) - 1}\n")
+
+    pos_inicial = int(input("Ingrese la posición inicial (PI): "))
+    pos_final = int(input("Ingrese la posición final (PF): "))
+    
+
+    if pos_inicial >= 0 and pos_final < len(valores) and pos_inicial <= pos_final:
+        resultado = suma_rango_recursivo(valores, pos_inicial, pos_final)
+        print(f"\nLa suma de los elementos desde el índice {pos_inicial} hasta {pos_final} es: {resultado}")
+    else:
+        print("\nError: Los índices ingresados no son válidos para esta lista.")
